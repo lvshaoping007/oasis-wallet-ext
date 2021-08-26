@@ -40,6 +40,8 @@ import SignTransaction from "../pages/SignTransaction";
 import LedgerAddresses from '../pages/LedgerAddresses';
 
 import ApprovePage from '../pages/ApprovePage';
+import WelcomePage from '../pages/Welcome';
+
 export function getAllRouter() {
   return (
     <HashRouter useHistory={useHistory} >
@@ -89,6 +91,7 @@ export function getAllRouter() {
         <Route path="/approve_page" component={ApprovePage} />
 
         <Route path="/ledger_address_page" component={LedgerAddresses} />
+        <Route path="/welcome" component={WelcomePage} />
       </Switch>
     </HashRouter>
   );
