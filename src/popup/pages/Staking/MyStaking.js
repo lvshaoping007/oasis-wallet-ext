@@ -43,6 +43,7 @@ class MyStaking extends React.Component {
         }
         this.isRequest = true
         Promise.all([getAccountStakeInfo(address), getUserDebondInfo(address)]).then((data) => {
+            console.log('mylist===',data)
             this.isRequest = false
             let stakeInfo = data[0]
             let debondInfo = data[1]
@@ -89,15 +90,25 @@ class MyStaking extends React.Component {
         percent = percent + "%"
         return percent
     }
+    getDebondNumber=(debondList)=>{
+        let totalNumber = new BigNumber(0)
+        for (let index = 0; index < debondList.length; index++) {
+            const debondItem = debondList[index];
+            totalNumber = totalNumber.plus(debondItem.shares)
+        }
+        totalNumber = totalNumber.toNumber()
+        return totalNumber
+    }
     renderTopInfo = () => {
         let { accountInfo } = this.props
         let {
             total_balance,
             delegations_balance,
-            debonding_delegations_balance,
-            delegationList
+            debondList,
+            stakeList
         } = accountInfo
         let percent = this.getStakePercent(total_balance, delegations_balance)
+        let debondNumber = this.getDebondNumber(debondList)
         return (<div className={"stake-top-info"}>
             <div className={"stake-top-container"}>
                 <div>
@@ -121,11 +132,11 @@ class MyStaking extends React.Component {
             <div className={"stake-user-detail-total"}>
                 <div className={"stake-user-detail-container"}>
                     <p className={"stake-user-detail-title"}>{getLanguage("stakeValidator")+":  "}</p>
-                    <p className={"stake-user-detail-content"}>{delegationList.length}</p>
+                    <p className={"stake-user-detail-content"}>{stakeList.length}</p>
                 </div>
                 <div className={"stake-user-detail-container"}>
                     <p className={"stake-user-detail-title"}>{getLanguage('debonding')+":  "}</p>
-                    <p className={"stake-user-detail-content"}>{getDisplayAmount(debonding_delegations_balance)}</p>
+                    <p className={"stake-user-detail-content"}>{getDisplayAmount(debondNumber)}</p>
                 </div>
             </div>
         </div>)
