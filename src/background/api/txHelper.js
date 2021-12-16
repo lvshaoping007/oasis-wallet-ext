@@ -122,6 +122,11 @@ export async function submitTx(tw, retryTime) {
                 let signSubmit = await tw.submit(oasisClient)
                 resolve(signSubmit)
             } catch (error) {
+                let errMessage = error?.message || error?.metadata?.['grpc-message']
+                if(errMessage){
+                    reject(error)
+                    return
+                }
                 if (retryTime > 0) {
                     setTimeout(async () => {
                         try {

@@ -54,7 +54,7 @@ class SendPage extends React.Component {
       feeGas: "",
       stakeType: type,
       netConfigList: [],
-      reclaimShare:"",
+      reclaimAmount:"",
       pageTitle:pageConfig.pageTitle,
       maxWithdrawAmount:0
     };
@@ -161,7 +161,7 @@ class SendPage extends React.Component {
       case SEND_PAGE_TYPE_RECLAIM:
         pageTitle = getLanguage('reclaim')
         
-        let debondAmount = nodeDetail && nodeDetail.amount || "0"
+        let debondAmount = nodeDetail && nodeDetail.shares || "0"
         maxCanUseAmount = new BigNumber(debondAmount).toNumber()
         isReclaim = true
 
@@ -367,13 +367,13 @@ class SendPage extends React.Component {
   }
   onAmountInput = (e) => {
     let amount = e.target.value;
-    let reclaimShare = ""
+    let reclaimAmount = ""
     if(this.state.stakeType === SEND_PAGE_TYPE_RECLAIM){
-      reclaimShare = this.getReclaimShare(amount)
+      reclaimAmount = this.getReclaimAmount(amount)
     }
     this.callSetState({
       amount: amount,
-      reclaimShare
+      reclaimAmount
     }, () => {
       this.setBtnStatus()
     })
@@ -595,7 +595,7 @@ class SendPage extends React.Component {
     let currentAccount = this.props.currentAccount
     let accountInfo = this.props.accountInfo
 
-    let shares = this.state.reclaimShare
+    let shares = this.state.amount
     let amount = new BigNumber(this.state.amount).toString()
     amount = toNonExponential(amount)
     let toAddress = ""
@@ -705,7 +705,7 @@ class SendPage extends React.Component {
     )
   }
   renderConfirmView = () => {
-    const {confirmTitle,confirmToAddressTitle,runtimeId,toAddressCanInputDefaultValue} = this.pageConfig
+    const { confirmTitle,confirmToAddressTitle,runtimeId,toAddressCanInputDefaultValue,isReclaim } = this.pageConfig
     let accountInfo = this.props.accountInfo
     let netNonce = isNumber(accountInfo.nonce) ? accountInfo.nonce : ""
     let nonce = this.state.nonce ? this.state.nonce : netNonce
@@ -723,10 +723,19 @@ class SendPage extends React.Component {
 
     let currentSymbol = this.props.netConfig.currentSymbol
     let toAddressShow = this.state.toAddress || toAddressCanInputDefaultValue
+    let amountTitle = ""
+    let amountContent = ""
+    if(isReclaim){
+      amountTitle = getLanguage('sendShares')
+      amountContent = this.state.amount + " " + "Shares"
+    }else{
+      amountTitle = getLanguage('amount')
+      amountContent = this.state.amount + " " + currentSymbol
+    }
     return (
       <div className={"confirm-modal-container"}>
         <div className={"test-modal-title-container"}><p className={"test-modal-title"}>{title}</p></div>
-        {this.renderConfirmItem(getLanguage('amount'), this.state.amount + " " + currentSymbol, true)}
+        {this.renderConfirmItem(amountTitle, amountContent, true)}
         {this.renderConfirmItem(toTitle, toAddressShow)}
         {this.renderConfirmItem(getLanguage('fromAddress'), this.state.fromAddress)}
         {this.renderConfirmItem(getLanguage('fee'), feeAmount + " " + currentSymbol)}
@@ -772,23 +781,23 @@ class SendPage extends React.Component {
     })
   }
 
-  getReclaimShare=(inputAmount = 0)=>{
+  getReclaimAmount=(inputAmount = 0)=>{
     if(!isNumber(inputAmount) || !BigNumber(inputAmount).gt(0)){
       return 0
     }
     const {amount ,shares} = this.props.nodeDetail
-    let sharePerAmount = new BigNumber(shares).dividedBy(amount).toString()
-    let realShare = new BigNumber(inputAmount).multipliedBy(sharePerAmount).toFixed(4,1).toString()
-    realShare = toNonExponential(realShare)
-    return realShare
+    let amountPerShare = new BigNumber(amount).dividedBy(shares).toString()
+    let reclaimAmount = new BigNumber(inputAmount).multipliedBy(amountPerShare).toFixed(4,1).toString()
+    reclaimAmount = toNonExponential(reclaimAmount)
+    return reclaimAmount
   }
 
   onClickAll=()=>{
     let {  nodeDetail } = this.props
     nodeDetail && nodeDetail.amount || "0"
     this.callSetState({
-      amount:nodeDetail && nodeDetail.amount || "0",
-      reclaimShare:nodeDetail && nodeDetail.shares || "0",
+      amount:nodeDetail && nodeDetail.shares || "0",
+      reclaimAmount:nodeDetail && nodeDetail.amount || "0",
     },()=>{
       this.setBtnStatus()
     })
@@ -810,8 +819,8 @@ class SendPage extends React.Component {
 
     if(isReclaim ){
       showTip = true
-      bottomText = this.state.reclaimShare|| "0"
-      sendAmountDesc = getLanguage('canReclaimAmount') + ": "
+      bottomText = this.state.reclaimAmount|| "0"
+      sendAmountDesc = getLanguage('canReclaimShares') + ": "
     } 
     return (
       <div>
@@ -835,7 +844,7 @@ class SendPage extends React.Component {
           </div>
         </div>
        {bottomText && <div className={"send-amount-share"}>
-          <p className={"send-amount-share-content"}>{getLanguage('sendShares')+": "}{bottomText}</p>
+          <p className={"send-amount-share-content"}>{getLanguage('calAmount')+": "}{bottomText}</p>
         </div>}
       </div>
     )

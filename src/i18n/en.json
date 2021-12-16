@@ -202,7 +202,6 @@
     "recordTime":"time",
     "AddEscrow": "Delegate",
     "changeSecPassword":"Change Security Password",
-    "reclaimShares":"Shares",
     "escrow":"Delegate",
     "password_tip":"I understand that if I lose my password, I will not be able to access the assets.",
     "debondReleaseTime":"Estimated release time",
@@ -281,5 +280,6 @@
 
     "withdrawTitle":"Withdraw",
     "withdrawToAddress":"Withdraw Address",
-    "withdrawInfo":"Withdraw Info"
+    "withdrawInfo":"Withdraw Info",
+    "calAmount":"Estimate Amount"
 }

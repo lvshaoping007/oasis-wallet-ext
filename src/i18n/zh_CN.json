@@ -202,7 +202,6 @@
   "recordTime":"时间",
   "AddEscrow": "委托",
   "changeSecPassword":"修改安全密码",
-  "reclaimShares":"股份",
   "escrow":"委托",
   "password_tip":"我清楚如果密码丢失，我将无法访问钱包的资产。",
   "debondReleaseTime":"预计释放时间",
@@ -279,6 +278,7 @@
 
   "withdrawTitle":"提现",
   "withdrawToAddress":"提现地址",
-  "withdrawInfo":"提现信息"
+  "withdrawInfo":"提现信息",
+  "calAmount":"预估金额"
 
 }

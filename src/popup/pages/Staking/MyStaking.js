@@ -157,7 +157,7 @@ class MyStaking extends React.Component {
         if (showBtn) {
             let stakeAmount = item.amount || 0
             let stakeShare = item.shares || 0
-            totalSupply = stakeAmount + " " + symbol
+            totalSupply =  getDisplayAmount(stakeShare) + " " + "Shares"
 
             supplyTitle = getLanguage('stakingStatus_1')
         } else {
